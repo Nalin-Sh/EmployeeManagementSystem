@@ -1,0 +1,38 @@
+﻿@using EmployeeManagementSystem.Application.DTOs.Employee
+@model EmployeeRequestDTO
+
+@{
+    ViewData["Title"] = "Add Employee";
+}
+
+<h2>Add Employee</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label>Name</label>
+        <input asp-for="Name" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label>Department</label>
+        <select asp-for="DepartmentID" class="form-control">
+            @* @foreach (var dept in ViewBag.Departments)
+            {
+                <option value="@dept.DepartmentID">@dept.DepartmentName</option>
+            } *@
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Salary</label>
+        <input asp-for="Salary" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label>Date of Joining</label>
+        <input asp-for="DateOfJoining" type="date" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

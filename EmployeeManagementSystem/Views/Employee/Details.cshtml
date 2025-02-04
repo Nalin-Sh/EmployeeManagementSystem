@@ -1,0 +1,30 @@
+﻿@using EmployeeManagementSystem.Application.DTOs.Employee
+@model EmployeeResponseDTO
+
+@{
+    ViewData["Title"] = "Employee Details";
+}
+
+<h2>Employee Details</h2>
+
+<table class="table">
+    <tr>
+        <th>Name:</th>
+        <td>@Model.Name</td>
+    </tr>
+    <tr>
+        <th>Department:</th>
+        <td>@Model.DepartmentName</td>
+    </tr>
+    <tr>
+        <th>Salary:</th>
+        <td>@Model.Salary.ToString("C")</td>
+    </tr>
+    <tr>
+        <th>Date of Joining:</th>
+        <td>@Model.DateOfJoining.ToShortDateString()</td>
+    </tr>
+</table>
+
+<a asp-action="Index" class="btn btn-secondary">Back</a>
+

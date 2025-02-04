@@ -9,10 +9,12 @@ namespace EmployeeManagementSystem.API.Controllers
     public class EmployeeController : Controller
     {
         private readonly IEmployeeService _employeeService;
+        private readonly IDepartmentService _departmentService;
 
-        public EmployeeController(IEmployeeService employeeService)
+        public EmployeeController(IEmployeeService employeeService, IDepartmentService departmentService)
         {
             _employeeService = employeeService;
+            _departmentService = departmentService;
         }
         public async Task<IActionResult> Index()
         {
@@ -45,13 +47,26 @@ namespace EmployeeManagementSystem.API.Controllers
         public async Task<IActionResult> GetEmployeeById(int id)
         {
             var employee = await _employeeService.GetEmployeeById(id);
-            return employee != null ? Ok(employee) : NotFound();
+            return employee != null ? 
+                Ok(employee) : NotFound();
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEmployee(int id, [FromBody] EmployeeRequestDTO employeeDto)
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var employeeDto = await _employeeService.GetEmployeeById(id);
+            if (employeeDto == null) return NotFound();
+
+            ViewBag.Departments = await _departmentService.GetDepartments();
+
+            return View(employeeDto);
+        }
+
+
+
+        [HttpPost("{id}")]
+        public async Task<IActionResult> UpdateEmployee(int id,EmployeeRequestDTO employeeDto)
+        {
 
             var result = await _employeeService.UpdateEmployee(id, employeeDto);
             return result ? Ok(new { message = "Employee updated successfully" }) : NotFound();

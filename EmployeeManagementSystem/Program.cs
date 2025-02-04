@@ -13,6 +13,7 @@ builder.Services.AddScoped<IDbConnection>(sp =>
 );
 
 builder.Services.AddScoped<IEmployeeService, EmployeeServices>();
+builder.Services.AddScoped<IDepartmentService, DepartmentServices>();
 
 var app = builder.Build();
 

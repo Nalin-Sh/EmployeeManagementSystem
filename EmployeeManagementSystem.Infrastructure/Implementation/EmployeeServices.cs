@@ -16,9 +16,12 @@ namespace EmployeeManagementSystem.Infrastructure.Implementation
     public class EmployeeServices : IEmployeeService
     {
         private readonly IDbConnection _db;
-        public EmployeeServices(IConfiguration configuration) 
+        private readonly IDepartmentService _departmentService;
+
+        public EmployeeServices(IConfiguration configuration, IDepartmentService departmentService) 
         {
             _db = new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
+            _departmentService = departmentService;
         }
 
         public async Task<int> AddEmployee(EmployeeRequestDTO employeeDto)
@@ -41,11 +44,10 @@ namespace EmployeeManagementSystem.Infrastructure.Implementation
 
         public async Task<EmployeeResponseDTO> GetEmployeeById(int id)
         {
-            return await _db.QueryFirstOrDefaultAsync<EmployeeResponseDTO>(
-             "sp_GetEmployeeById",
-             new { EmployeeID = id },
-             commandType: CommandType.StoredProcedure
-         );
+            var query = "EXEC sp_GetEmployeeById @EmployeeID";
+            var parameters = new { EmployeeID = id };
+
+            return await _db.QueryFirstOrDefaultAsync<EmployeeResponseDTO>(query, parameters);
         }
 
         public async Task<IEnumerable<EmployeeResponseDTO>> GetEmployees()

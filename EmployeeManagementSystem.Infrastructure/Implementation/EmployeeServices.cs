@@ -39,7 +39,7 @@ namespace EmployeeManagementSystem.Infrastructure.Implementation
 
         public async Task<bool> DeleteEmployee(int id)
         {
-            return await _db.ExecuteAsync("sp_SoftDeleteEmployee", new { EmployeeID = id }, commandType: CommandType.StoredProcedure) > 0;
+            return await _db.ExecuteAsync("sp_DeleteEmployee", new { EmployeeID = id }, commandType: CommandType.StoredProcedure) > 0;
         }
 
         public async Task<EmployeeResponseDTO> GetEmployeeById(int id)

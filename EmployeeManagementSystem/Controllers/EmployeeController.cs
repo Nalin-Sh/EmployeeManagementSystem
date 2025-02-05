@@ -3,6 +3,7 @@ using EmployeeManagementSystem.Application.Interfaces;
 using EmployeeManagementSystem.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol.Core.Types;
+using PagedList.Core;
 
 namespace EmployeeManagementSystem.API.Controllers
 {
@@ -16,15 +17,28 @@ namespace EmployeeManagementSystem.API.Controllers
             _employeeService = employeeService;
             _departmentService = departmentService;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? department)
         {
+            ViewBag.Departments = await _departmentService.GetDepartments();
             var employees = await _employeeService.GetEmployees();
+
+            var departments = await _departmentService.GetDepartments();
+            
+            if (department.HasValue && department.Value > 0)
+            {
+                var selectedDepartment = departments.FirstOrDefault(d => d.DepartmentID == department.Value).DepartmentName;
+                if (!string.IsNullOrEmpty(selectedDepartment))
+                {
+                    employees = employees.Where(e => e.DepartmentName == selectedDepartment).ToList();
+                }
+            }
             return View(employees);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetEmployees()
+        public async Task<IActionResult> GetEmployees(string? search,int? department)
         {
+
             var employees = await _employeeService.GetEmployees();
             return Ok(employees);
         }
@@ -33,6 +47,7 @@ namespace EmployeeManagementSystem.API.Controllers
 
         public async Task<IActionResult> Create()
         {
+            ViewBag.Departments = await _departmentService.GetDepartments();
             return View();
         }
 
@@ -44,11 +59,15 @@ namespace EmployeeManagementSystem.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetEmployeeById(int id)
+        public async Task<IActionResult> Details(int id)
         {
             var employee = await _employeeService.GetEmployeeById(id);
-            return employee != null ? 
-                Ok(employee) : NotFound();
+            if (employee != null)
+            {
+                return View(employee);
+            }
+            return View(new EmployeeResponseDTO());
+         
         }
 
         [HttpGet]
@@ -64,19 +83,52 @@ namespace EmployeeManagementSystem.API.Controllers
 
 
 
-        [HttpPost("{id}")]
-        public async Task<IActionResult> UpdateEmployee(int id,EmployeeRequestDTO employeeDto)
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, EmployeeRequestDTO employeeDto)
         {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Departments = await _departmentService.GetDepartments();
+                return View(employeeDto);
+            }
 
             var result = await _employeeService.UpdateEmployee(id, employeeDto);
-            return result ? Ok(new { message = "Employee updated successfully" }) : NotFound();
+
+            if (result != null)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                ModelState.AddModelError("", "Failed to update employee.");
+                ViewBag.Departments = await _departmentService.GetDepartments();
+                return View(employeeDto);
+            }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEmployee(int id)
+
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var employee = await _employeeService.GetEmployeeById(id);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+            return View(employee);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var result = await _employeeService.DeleteEmployee(id);
-            return result ? Ok(new { message = "Employee deleted successfully" }) : NotFound();
+            if(result != null)
+            {
+                return RedirectToAction("Index");
+            }
+            return View();
+            
         }
     }
 }

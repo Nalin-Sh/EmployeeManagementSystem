@@ -5,20 +5,20 @@
     ViewData["Title"] = "Employee List";
 }
 
-<h2>Employee Management</h2>
+<h2>Employee Management</h2> 
 
 <form method="get">
     <div class="row mb-3">
-        <div class="col-md-4">
+        @* <div class="col-md-4">
             <input type="text" name="search" class="form-control" placeholder="Search by name" value="@ViewData["Search"]">
-        </div>
+        </div> *@
         <div class="col-md-4">
             <select name="department" class="form-control">
                 <option value="">All Departments</option>
-                @* @foreach (var dept in ViewBag.Departments)
+                @foreach (var dept in ViewBag.Departments)
                 {
                     <option value="@dept.DepartmentID">@dept.DepartmentName</option>
-                } *@
+                }
             </select>
         </div>
         <div class="col-md-2">
@@ -30,7 +30,7 @@
     </div>
 </form>
 
-<table class="table table-bordered">
+<table id="myTable" class="table table-bordered table-striped table-hover ">
     <thead>
         <tr>
             <th>Name</th>
@@ -57,3 +57,5 @@
         }
     </tbody>
 </table>
+
+

@@ -16,16 +16,17 @@
     </div>
 
     <div class="mb-3">
-        <label asp-for="DepartmentName" class="form-label">Department</label>
-        <select class="form-control" asp-for="DepartmentName">
+        <label asp-for="DepartmentId" class="form-label">Department</label>
+        <select class="form-control" asp-for="DepartmentId">
+            <option value="">Select a Department</option>
             @foreach (var dept in ViewBag.Departments)
             {
-                <option value="@dept.DepartmentName" selected="@(dept.DepartmentName == Model.DepartmentName)">
+                <option value="@dept.DepartmentID" selected="@(dept.DepartmentID == Model.DepartmentId)">
                     @dept.DepartmentName
                 </option>
             }
         </select>
-        <span asp-validation-for="DepartmentName" class="text-danger"></span>
+        <span asp-validation-for="DepartmentId" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
@@ -43,7 +44,3 @@
     <button type="submit" class="btn btn-primary">Save Changes</button>
     <a asp-action="Index" class="btn btn-secondary">Cancel</a>
 </form>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

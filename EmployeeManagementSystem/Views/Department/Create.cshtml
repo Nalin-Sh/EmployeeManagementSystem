@@ -1,5 +1,18 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using EmployeeManagementSystem.Application.DTOs.Department
+@model DepartmentDTO
+
 @{
+    ViewData["Title"] = "Add Department";
 }
+
+<h2>Add Employee</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label>Name</label>
+        <input asp-for="DepartmentName" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+

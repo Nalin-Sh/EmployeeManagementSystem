@@ -1,9 +1,12 @@
 ﻿using EmployeeManagementSystem.Application.DTOs.Department;
 using EmployeeManagementSystem.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace EmployeeManagementSystem.API.Controllers
 {
+    [Authorize (Roles ="Admin")]
     public class DepartmentController : Controller
     {
         private readonly IDepartmentService _departmentService;

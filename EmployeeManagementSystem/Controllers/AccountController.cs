@@ -25,13 +25,21 @@ public class AccountController : Controller
             return View(model);
 
         var user = new User { Id = Guid.NewGuid(), UserName = model.UserName, Email = model.Email };
-        bool success = await _authService.Register(user, model.Password);
+        var success = await _authService.Register(user, model.Password);
 
-        if (success)
-            return RedirectToAction("Login");
+        if (!success)
+        {
+            ModelState.AddModelError("", "Registration failed");
+            return View(model);
+        }
 
-        ModelState.AddModelError("", "Registration failed");
-        return View(model);
+        var assignRole = await _authService.AssignRole(user.Id, "Admin");
+        if (!assignRole)
+        {
+            ModelState.AddModelError("", "Role Assignment failed");
+            return View(model);
+        }
+            return RedirectToAction("Login"); 
     }
 
     [HttpGet]
@@ -49,12 +57,17 @@ public class AccountController : Controller
             ModelState.AddModelError("", "Invalid credentials");
             return View(model);
         }
+        var roles = await _authService.GetUserRoles(user.Id);
 
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.Name, user.UserName),
-            new Claim(ClaimTypes.Email, user.Email)
+            new Claim(ClaimTypes.Email, user.Email),
         };
+        foreach(var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
 
         var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var authProperties = new AuthenticationProperties();

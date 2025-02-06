@@ -11,6 +11,10 @@ namespace EmployeeManagementSystem.Application.Interfaces
     {
         Task<bool> Register(User user, string password);
         Task<User> Login(string email, string password);
+
+        Task<bool> AssignRole(Guid userId, string roleName);
+
+        Task<List<string>> GetUserRoles(Guid userId);
     }
 
 }

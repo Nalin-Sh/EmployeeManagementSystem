@@ -1,12 +1,14 @@
 ﻿using EmployeeManagementSystem.Application.DTOs.Employee;
 using EmployeeManagementSystem.Application.Interfaces;
 using EmployeeManagementSystem.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol.Core.Types;
 using PagedList.Core;
 
 namespace EmployeeManagementSystem.API.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class EmployeeController : Controller
     {
         private readonly IEmployeeService _employeeService;
@@ -35,6 +37,7 @@ namespace EmployeeManagementSystem.API.Controllers
             return View(employees);
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetEmployees(string? search,int? department)
         {
